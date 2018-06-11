@@ -30,3 +30,12 @@ class Summary(object):
                 self.tf_summary.value[index].simple_value = val
 
         self.writer.add_summary(self.tf_summary, step)
+
+    def add_scalar(self):
+        pass
+
+    def add_images(self):
+        pass
+
+    def add_histogram(self):
+        pass
