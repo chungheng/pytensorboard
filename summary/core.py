@@ -4,38 +4,43 @@ import tensorflow as tf
 class Summary(object):
     """A Python wrapper of the Tensorflow Summary object.
     """
-    def __init__(self, name, dirpath, *args, **kwargs):
+    def __init__(self, name, dirpath):
         self.name = name
         self.dirpath = dirpath
         self.filepath = os.path.join(self.dirpath, self.name)
         self.writer = tf.summary.FileWriter(self.filepath)
 
-        self.attrs = dict()
-        self.tf_summary = tf.Summary()
-
-        for arg in args:
-            self.attrs[arg] = len(self.attrs)
-            self.tf_summary.value.add(tag=arg, simple_value=None)
-
-        for key, val in kwargs.items():
-            self.attrs[key] = len(self.attrs)
-            self.tf_summary.value.add(tag=key, simple_value=val)
+        self.summaries = []
+        self.tf_summary = None
 
     def add(self, **kwargs):
         step = kwargs.pop('global_step', None)
 
         for key, val in kwargs.items():
-            index = self.attrs.get(key)
-            if index is not None:
-                self.tf_summary.value[index].simple_value = val
+            if not hasattr(val, '__len__'):
+                self.add_scalar(key, val, write=False)
 
-        self.writer.add_summary(self.tf_summary, step)
+        self._write_summary(global_step)
 
-    def add_scalar(self):
-        pass
+    def add_scalar(self, tag, value, write=True, global_step=None):
+        tf_summary_value = tf.Summary.Value(tag=tag, simple_value=value)
+        self.summaries.append(tf_summary_value)
 
-    def add_images(self):
-        pass
+        if write:
+            self._write_summary(global_step)
 
-    def add_histogram(self):
-        pass
+    def add_images(self, write=True, global_step=None, **kwargs):
+
+        if write:
+            self._write_summary(global_step)
+
+    def add_histogram(self, write=True, global_step=None, **kwargs):
+
+        if write:
+            self._write_summary(global_step)
+
+    def _write_summary(self, global_step=None):
+        self.tf_summary = tf.Summary(value=self.summaries)
+        self.writer.add_summary(self.tf_summary, global_step)
+        del self.summaries[:]
+        self.tf_summary = None
