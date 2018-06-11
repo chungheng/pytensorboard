@@ -1,5 +1,11 @@
 import os
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+
+import numpy
 import tensorflow as tf
+from StringIO import StringIO
 
 class Summary(object):
     """A Python wrapper of the Tensorflow Summary object.
@@ -14,13 +20,38 @@ class Summary(object):
         self.tf_summary = None
 
     def add(self, **kwargs):
-        step = kwargs.pop('global_step', None)
+        global_step = kwargs.pop('global_step', None)
+        write = kwargs.pop('write', True)
 
         for key, val in kwargs.items():
-            if not hasattr(val, '__len__'):
-                self.add_scalar(key, val, write=False)
+            if hasattr(val, '__len__') and not isinstance(val, numpy.ndarray):
+                self._add_multiple(key, val)
+            else:
+                self._add_single(key, val)
 
-        self._write_summary(global_step)
+        if write:
+            self._write_summary(global_step)
+
+    def _add_single(self, tag, value):
+        if numpy.isscalar(value):
+            self.add_scalar(tag, value, write=False)
+        elif isinstance(value, Figure):
+            self.add_image(tag, value, write=False, format=Figure)
+        elif isinstance(value, numpy.ndarray):
+            self.add_image(tag, value, write=False, format=numpy.ndarray)
+        else:
+            raise TypeError()
+
+    def _add_multiple(self, tag, values):
+        for i, value in enumerate(values):
+            self._add_single('%s/%d' % (tag, i), value, write=False)
+
+    def add_scalars(self, tag, scalars, write=True, global_step=None):
+        for i, scalar in enumerate(scalars):
+            self.add_scalar('%s/%d' % (tag, i), scalar, write=False)
+
+        if write:
+            self._write_summary(global_step)
 
     def add_scalar(self, tag, value, write=True, global_step=None):
         tf_summary_value = tf.Summary.Value(tag=tag, simple_value=value)
