@@ -35,10 +35,8 @@ class Summary(object):
     def _add_single(self, tag, value):
         if numpy.isscalar(value):
             self.add_scalar(tag, value, write=False)
-        elif isinstance(value, Figure):
-            self.add_image(tag, value, write=False, format=Figure)
         elif isinstance(value, numpy.ndarray):
-            self.add_image(tag, value, write=False, format=numpy.ndarray)
+            self.add_image(tag, value, write=False)
         else:
             raise TypeError()
 
@@ -60,7 +58,30 @@ class Summary(object):
         if write:
             self._write_summary(global_step)
 
-    def add_images(self, write=True, global_step=None, **kwargs):
+    def add_images(self, tag, images, write=True, global_step=None):
+        for i, image in enumerate(images):
+            self.add_image('%s/%d' % (tag, i), image, write=False)
+
+        if write:
+            self._write_summary(global_step)
+
+    def add_image(self, tag, image, write=True, global_step=None):
+
+        sio = StringIO()
+        if isinstance(image, numpy.ndarray):
+            plt.imsave(sio, image, format='png', dpi=300)
+        else:
+            raise TypeError()
+
+        # Create an Image object
+        tf_summary_image = tf.Summary.Image(
+            encoded_image_string=sio.getvalue(),
+            height=image.shape[0],
+            width=image.shape[1])
+
+        # Create a Summary value
+        tf_summary_value = tf.Summary.Value(tag=tag, image=tf_summary_image)
+        self.summaries.append(tf_summary_value)
 
         if write:
             self._write_summary(global_step)
