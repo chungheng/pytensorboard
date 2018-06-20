@@ -15,7 +15,7 @@ from distutils.command.install_headers import install_headers
 from setuptools import find_packages
 from setuptools import setup
 
-NAME =               'summary'
+NAME =               'tfsummary'
 VERSION =            '0.1'
 AUTHOR =             'Chung-Heng Yeh'
 AUTHOR_EMAIL =       'chungheng.yeh@gmail.com'

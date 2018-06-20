@@ -7,7 +7,7 @@ import numpy
 import tensorflow as tf
 from StringIO import StringIO
 
-class Summary(object):
+class TFSummary(object):
     """A Python wrapper of the Tensorflow Summary object.
     """
     def __init__(self, name, dirpath):
