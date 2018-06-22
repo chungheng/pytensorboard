@@ -9,14 +9,37 @@ from StringIO import StringIO
 
 class TFSummary(object):
     """A Python wrapper of the Tensorflow Summary object.
+
+    Parameters:
+        logdir: string
+            Directory where all of the events will be written out.
+        name: string
+            Optional; name for a set of summaries, ex. training.
+
+    Attributes:
+        writer: tf.summary.FileWriter
+            The writer that write `tf_summary` into a tensorflow event file.
+        summary_values: list
+            A list of tf.summary.summary.Value instances. `summary_values` will
+            be wrapped inside tf.Summary before written into the file.
+        tf_summary: tf.Summary
+            The tensorflow summary object that wraps `summary_values`, and  will
+            be written into the file via `writer`.
+
+    Methods:
+        add: add multiple scalars or images identified by different tags.
+        add_scalar: add a single scalar.
+        add_scalars: add multiple scalars under the same tag.
+        add_image: add a single image.
+        add_images: add multiple images under the same tag.
     """
-    def __init__(self, name, dirpath):
-        self.name = name
-        self.dirpath = dirpath
-        self.filepath = os.path.join(self.dirpath, self.name)
+    def __init__(self, logdir, name=None):
+        self.logdir = logdir
+        self.name = name or ''
+        self.filepath = os.path.join(self.logdir, self.name)
         self.writer = tf.summary.FileWriter(self.filepath)
 
-        self.summaries = []
+        self.summary_values = []
         self.tf_summary = None
 
     def add(self, **kwargs):
@@ -53,7 +76,7 @@ class TFSummary(object):
 
     def add_scalar(self, tag, value, write=True, global_step=None):
         tf_summary_value = tf.Summary.Value(tag=tag, simple_value=value)
-        self.summaries.append(tf_summary_value)
+        self.summary_values.append(tf_summary_value)
 
         if write:
             self._write_summary(global_step)
@@ -77,13 +100,11 @@ class TFSummary(object):
 
         # Create an Image object
         tf_summary_image = tf.Summary.Image(
-            encoded_image_string=sio.getvalue(),
-            height=image.shape[0],
-            width=image.shape[1])
+            encoded_image_string=sio.getvalue())
 
         # Create a Summary value
         tf_summary_value = tf.Summary.Value(tag=tag, image=tf_summary_image)
-        self.summaries.append(tf_summary_value)
+        self.summary_values.append(tf_summary_value)
 
         if write:
             self._write_summary(global_step)
@@ -94,7 +115,7 @@ class TFSummary(object):
             self._write_summary(global_step)
 
     def _write_summary(self, global_step=None):
-        self.tf_summary = tf.Summary(value=self.summaries)
+        self.tf_summary = tf.Summary(value=self.summary_values)
         self.writer.add_summary(self.tf_summary, global_step)
-        del self.summaries[:]
+        del self.summary_values[:]
         self.tf_summary = None
