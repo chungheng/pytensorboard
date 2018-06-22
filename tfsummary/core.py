@@ -70,6 +70,8 @@ class TFSummary(object):
         sio = StringIO()
         if isinstance(image, numpy.ndarray):
             plt.imsave(sio, image, format='png', dpi=300)
+        elif isinstance(image, Figure):
+            image.savefig(sio, format='png', dpi=300)
         else:
             raise TypeError()
 
