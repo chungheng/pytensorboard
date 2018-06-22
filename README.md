@@ -26,6 +26,8 @@ Logging and visualizing data with this package takes three steps:
 2. Log data with the `TFSummary` object in iterative steps.
 3. Launch a `TensorBoard` server with the same directory in Step 1.
 
+### Initializing TFSummary
+
 The `TFSummary` object is designed to be similar to the Tensorflow `FileWriter` object. The constructor of `TFSummary` takes a `logdir` argument, i.e., the directory where all of the data will be written. In addition, the `TFSummary` takes an optional argument `name` that specifies the name of event file. An `event` is a collection of summaries of scalars or images.  
 
 ```python
@@ -34,6 +36,8 @@ from tfsummary import TFSummary
 tfs_training = TFSummary('path_to_log_dir', 'training')
 tfs_validation = TFSummary('path_to_log_dir', 'validation')
 ```
+
+### Logging with TFSummary
 
 Logging data is primarily achieved via the high-level API: `TFSummary.add(global_step=None[, tag=value[, ...]])`. The argument `global_step` is generally used to specify the index of *step* or *epoch* during training. `TFSummary.add` takes variable number of keyword arguments in the format of `tag=value`:
 
@@ -53,9 +57,9 @@ The `value` of a keyword argument in `TFSummary.add` can be a scalar or an "*ima
 import numpy
 import matplotlib.pyplot as plt
 
-noise = np.random.random((100, 100))
+noise = numpy.random.random((100, 100))
 fig = plt.figure()
-plt.plot(np.range(100), np.random.random(100))
+plt.plot(numpy.range(100), numpy.random.random(100))
 
 tfs_validation.add(global_step=i, error=valid_error, result=fig, noise=noise)
 ```
