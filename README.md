@@ -33,8 +33,8 @@ The `TFSummary` object is designed to be similar to the Tensorflow `FileWriter` 
 ```python
 from tfsummary import TFSummary
 
-tfs_training = TFSummary('path_to_log_dir', 'training')
-tfs_validation = TFSummary('path_to_log_dir', 'validation')
+tfs_training = TFSummary('path_to_log_dir', name='training')
+tfs_validation = TFSummary('path_to_log_dir', name='validation')
 ```
 
 ### Logging with TFSummary
