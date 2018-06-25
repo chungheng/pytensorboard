@@ -58,7 +58,7 @@ class TFSummary(object):
     def _add_single(self, tag, value):
         if numpy.isscalar(value):
             self.add_scalar(tag, value, write=False)
-        elif isinstance(value, numpy.ndarray):
+        elif isinstance(value, numpy.ndarray) or isinstance(value, Figure):
             self.add_image(tag, value, write=False)
         else:
             raise TypeError()
@@ -89,7 +89,6 @@ class TFSummary(object):
             self._write_summary(global_step)
 
     def add_image(self, tag, image, write=True, global_step=None):
-
         sio = StringIO()
         if isinstance(image, numpy.ndarray):
             plt.imsave(sio, image, format='png', dpi=300)
