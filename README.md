@@ -26,7 +26,7 @@ Logging and visualizing data with this package takes three steps:
 2. Log data with the `TFSummary` object in iterative steps.
 3. Launch a `TensorBoard` server with the same directory in Step 1.
 
-### instantiating TFSummary
+### Instantiating TFSummary
 
 The `TFSummary` object is designed to be similar to the Tensorflow `FileWriter` object. The constructor of `TFSummary` takes a `logdir` argument, i.e., the directory where all of the data will be written. In addition, the `TFSummary` takes an optional argument `name` that specifies the name of event file. An `event` is a collection of summaries of scalars or images.  
 
