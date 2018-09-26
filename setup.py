@@ -15,7 +15,7 @@ from distutils.command.install_headers import install_headers
 from setuptools import find_packages
 from setuptools import setup
 
-NAME =               'tfsummary'
+NAME =               'pytensorboard'
 VERSION =            '0.1'
 AUTHOR =             'Chung-Heng Yeh'
 AUTHOR_EMAIL =       'chungheng.yeh@gmail.com'
@@ -23,7 +23,7 @@ URL =                'https://github.com/chungheng/summary'
 MAINTAINER =         AUTHOR
 MAINTAINER_EMAIL =   AUTHOR_EMAIL
 DESCRIPTION =        'Source code generator'
-LONG_DESCRIPTION =   'A Python wrapper of the Tensorflow Summary object'
+LONG_DESCRIPTION =   'A Python wrapper for visualizing data in Tensorboard'
 DOWNLOAD_URL =       URL
 LICENSE =            'BSD'
 CLASSIFIERS = [

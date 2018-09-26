@@ -1,4 +1,4 @@
-# A Python wrapper for Tensorflow Summary object
+# A Python wrapper for visualizing data in Tensorboard
 
 This package aims to leverage the visualization tool
 [Tensorboard](https://www.tensorflow.org/programmers_guide/summaries_and_tensorboard)
@@ -31,7 +31,7 @@ Logging and visualizing data with this package takes three steps:
 The `TFSummary` object is designed to be similar to the Tensorflow `FileWriter` object. The constructor of `TFSummary` takes a `logdir` argument, i.e., the directory where all of the data will be written. In addition, the `TFSummary` takes an optional argument `name` that specifies the name of event file. An `event` is a collection of summaries of scalars or images.  
 
 ```python
-from tfsummary import TFSummary
+from pytensorboard import TFSummary
 
 tfs_training = TFSummary('path_to_log_dir', name='training')
 tfs_validation = TFSummary('path_to_log_dir', name='validation')
