@@ -1,4 +1,4 @@
-# Python wrapper for Tensorflow Summary object
+# A Python wrapper for Tensorflow Summary object
 
 This package aims to leverage the visualization tool
 [Tensorboard](https://www.tensorflow.org/programmers_guide/summaries_and_tensorboard)
